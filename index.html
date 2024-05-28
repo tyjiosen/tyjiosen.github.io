@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>早报</title>
+    <!-- Import style -->
+    <link href="//s4.zstatic.net/ajax/libs/element-plus/2.7.3/index.css" rel="stylesheet">
+    <!-- Import Vue 3 -->
+    <script src="//s4.zstatic.net/ajax/libs/vue/3.4.27/vue.global.js"></script>
+    <!-- Import component library -->
+    <script src="//s4.zstatic.net/ajax/libs/element-plus/2.7.3/index.full.js"></script>
+    <style>
+        .zb-lists {
+            padding: 10px 0px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+
+        <el-row v-for="item,key in lists" :key="key" justify="center" class="zb-lists">
+            <el-card style="max-width: 480px" @click="item.click">
+                {{ item.label }}
+            </el-card>
+        </el-row>
+
+        <el-row justify="center" class="zb-lists">
+            <el-card style="max-width: 680px" >
+                暂无其他早报了..
+            </el-card>
+        </el-row>
+
+    </div>
+
+    <script>
+        const { createApp, ref } = Vue
+
+        const app = createApp({
+            setup() {
+
+                const downloadImage = (url,fileName) => {
+                    fetch(url)
+                        .then(response => response.blob())
+                        .then(blob => {
+                            // 创建一个用于下载文件的链接元素
+                            const url = window.URL.createObjectURL(blob);
+                            const link = document.createElement('a');
+                            link.href = url;
+                            link.setAttribute('download', fileName); // 设置下载文件名
+                            document.body.appendChild(link);
+                            link.click(); // 触发下载
+
+                            // 清理
+                            window.URL.revokeObjectURL(url);
+                            document.body.removeChild(link);
+                        })
+                        .catch(error => {
+                            ElementPlus.ElMessage.error('图片下载失败:', error);
+                        });
+                }
+                const lists = [
+                    {
+                        label: "每日60秒读懂世界",
+                        click: () => {
+                            fetch("https://zaobao.xcx.authbox.cn/api/today").then((Response) => {
+                                return Response.json();
+                            }).then((res) => {
+
+                                if (res.code == 200) {
+                                    ElementPlus.ElMessage.success("获取成功");
+                                    //downloadImage(res.data.image,`${res.data.date}.png`);
+                                    // 跨域 跳转算了
+                                    setTimeout(()=>{
+                                        window.location.href = res.data.image
+                                    },500)
+                                } else {
+                                    ElementPlus.ElMessage.error('获取失败:' + res.message)
+                                }
+                            })
+                        }
+                    }
+                ]
+                return {
+                    lists
+                }
+            }
+        })
+
+        app.use(ElementPlus);
+        app.mount('#app')
+    </script>
+</body>
+
+</html>
