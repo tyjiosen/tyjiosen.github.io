@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>money</title>
+    <!-- Import style -->
+    <link href="//s4.zstatic.net/ajax/libs/element-plus/2.7.3/index.css" rel="stylesheet">
+    <!-- Import Vue 3 -->
+    <script src="//s4.zstatic.net/ajax/libs/vue/3.4.27/vue.global.js"></script>
+    <!-- Import component library -->
+    <script src="//s4.zstatic.net/ajax/libs/element-plus/2.7.3/index.full.js"></script>
+    <style>
+        .zb-lists {
+            padding: 10px 0px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+
+        <el-row v-for="item,key in lists" :key="key" justify="center" class="zb-lists">
+            <el-card style="max-width: 680px">
+                {{ item.name }} {{ item.money }} 
+            </el-card>
+        </el-row>
+
+        <el-row justify="center" class="zb-lists">
+            <el-card style="max-width: 680px">
+                合计 {{ lists.reduce((accumulator, currentValue) => accumulator + currentValue.money, 0) }} 
+            </el-card>
+        </el-row>
+
+    </div>
+
+    <script>
+        const { createApp, ref } = Vue
+
+        const app = createApp({
+            setup() {
+
+                const  monthsBetween = (startDate, endDate) => {
+
+                    let years = endDate.getFullYear() - startDate.getFullYear();
+                    let months = endDate.getMonth() - startDate.getMonth();
+                    
+                    // 如果年份差大于0，并且月份差小于0，则需要从年份差中减去1
+                    if (years > 0 && months < 0) {
+                        years--;
+                    }
+                    
+                    // 最后返回总月份差
+                    return years * 12 + months;
+                }
+
+                const lists = [
+                    {
+                        name: "嘟嘟",
+                        money: monthsBetween(new Date('2022-06-26'),new Date()) * 2000
+                    },
+                    {
+                        name: "双双",
+                        money: monthsBetween(new Date('2024-02-22'),new Date()) * 2000
+                    }
+                ]
+                return {
+                    lists
+                }
+            }
+        })
+
+        app.use(ElementPlus);
+        app.mount('#app')
+    </script>
+</body>
+
+</html>
