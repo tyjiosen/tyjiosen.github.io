@@ -1,1 +1,0 @@
-import{a as s,N as r}from"./nprogress-DlKjqmFG.js";import{E as o}from"./index-DFrWJJtT.js";const t=s.create({timeout:45e3});t.interceptors.request.use(e=>(r.start(),e),e=>(r.done(),Promise.reject(e)));t.interceptors.response.use(e=>(r.done(),e),e=>(r.done(),o.error("网络异常"),Promise.reject(e)));export{t as h};
